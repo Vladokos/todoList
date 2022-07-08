@@ -1,0 +1,127 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    background-color: #FFFFFF;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Ubuntu', sans-serif;
+}
+
+.regForm h1 ,
+.loginInForm h1 {
+    width: 119%;
+
+    font-weight: bold;
+    font-size: 30px;
+
+    line-height: 1.2;
+
+    text-align: center;
+    color: #403866;
+
+    margin-bottom: 30px;
+}
+
+.fields {
+    display: flex;
+    flex-direction: column;
+}
+
+.fields input {
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+    font-size: 18px;
+
+    line-height: 1.2;
+
+    color: #403866;
+
+    background-color: #E6E6E6;
+
+    outline: none;
+
+    border: none;
+    border-radius: 3px;
+
+    padding: 0 20px 0 38px;
+
+    margin-bottom: 16px;
+
+    height: 62px;
+    width: 119%;
+}
+
+.fields input:nth-child(2) {
+    margin-bottom: 25px;
+}
+
+.fields input::placeholder {
+    color: #9591A1;
+}
+
+
+.fields input:focus + .focus-input {
+    position: absolute;
+    transform: translate(0px, -78px);
+
+    width: 370px;
+    height: 60px;
+
+    opacity: 1;
+}
+
+.focus-input {
+    position: absolute;
+
+    pointer-events: none;
+
+    transform: translate(-15px, -92px);
+
+    width: 400px;
+    height: 90px;
+
+    border: 1px solid #827ffe;
+    border-radius: 3px;
+
+    opacity: 0;
+    transition: 0.6s cubic-bezier(0.5, 1, 0.89, 1);
+}
+.regForm a,
+.loginInForm a {
+    display: block;
+
+    font-size: 16px;
+    color: #827ffe;
+    line-height: 1.4;
+
+    width: 119%;
+
+    text-align: end;
+    text-decoration: none;
+
+    margin-bottom: 20px;
+}
+#reg,
+#login {
+    cursor: pointer;
+
+    font-family: 'Ubuntu', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    color: #FFFFFF;
+
+    width: 119%;
+    height: 62px;
+    background-color: #827ffe;
+
+    outline: none;
+    border: none;
+    border-radius: 3px;
+}
+
+

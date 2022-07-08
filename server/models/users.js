@@ -13,5 +13,8 @@ const userSchema = new schema(
                 status: Boolean,
             },
         ],
-    }
+    },
+    {versionKey: false}
 );
+
+module.exports = mongoose.model("users", userSchema);

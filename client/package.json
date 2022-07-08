@@ -13,6 +13,7 @@
     "@jest/environment": "^28.1.2",
     "@types/jest": "^28.1.4",
     "@types/jsdom": "^11.0.4",
+    "axios": "^0.27.2",
     "jest": "^28.1.2",
     "jest-environment-jsdom": "^28.1.2",
     "jsdom": "^20.0.0",
