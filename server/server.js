@@ -21,6 +21,10 @@ app.use("/register", (req, res) => {
   res.render("registration.hbs");
 });
 
+app.use("/main", (req,res) => {
+  res.render("main.hbs");
+})
+
 app.post("/log", jsonParser, async (req, res) => {
   try {
     const { login, password } = req.body;
