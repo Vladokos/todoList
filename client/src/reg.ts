@@ -7,15 +7,18 @@ const button = document.getElementById("reg") as HTMLButtonElement;
 
 button.addEventListener("click", (e) => {
   e.preventDefault();
-  console.log(button);
-  // axios
-  //   .post("/login", {
-  //     login,
-  //     password,
-  //   })
-  //   .then((res) => {
-  //     console.log(res);
-  //   }).catch((err) => {
-  //       console.log(err);
-  //   });
+
+  axios
+    .post("/reg", {
+      login: login.value,
+      password: password.value,
+    })
+    .then((res) => {
+      console.log(res);
+
+    })
+    .catch((err) => {
+      console.log(err);
+      
+    });
 });
