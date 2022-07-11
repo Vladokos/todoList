@@ -1,15 +1,15 @@
-const path = require('path');
+const path = require("path");
 module.exports = {
-    mode: "production",
-    entry: "./src/main.ts",
-    output: {
-        filename: "bundle.js",
-        path: path.resolve(__dirname, 'dist')
-    },
-    resolve: {
-        extensions: [".webpack.js", ".web.js", ".ts", ".js"]
-    },
-    module: {
-        rules: [{ test: /\.ts$/, loader: "ts-loader" }]
-    }
-}
+  mode: "development",
+  entry: { "reg": "./src/reg.ts", "login": "./src/login.ts" },
+  output: {
+    path: path.resolve(__dirname, "dist"),
+    filename: "[name].js",
+  },
+  resolve: {
+    extensions: [".webpack.js", ".web.js", ".ts", ".js"],
+  },
+  module: {
+    rules: [{ test: /\.ts$/, loader: "ts-loader" }],
+  },
+};
