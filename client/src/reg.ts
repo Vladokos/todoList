@@ -14,11 +14,13 @@ button.addEventListener("click", (e) => {
       password: password.value,
     })
     .then((res) => {
-      console.log(res);
+      if (res.data.message === "Success") {
+        sessionStorage.setItem("Username", login.value);
 
+        window.location.replace("/main");
+      }
     })
     .catch((err) => {
       console.log(err);
-      
     });
 });
