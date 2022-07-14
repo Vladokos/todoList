@@ -14,7 +14,9 @@ button.addEventListener("click", (e) => {
       password: password.value,
     })
     .then((res) => {
-      if(res.data.message === "Success"){
+      if (res.data.message === "Success") {
+        sessionStorage.setItem("Username", login.value);
+
         window.location.replace("/main");
       }
     })
