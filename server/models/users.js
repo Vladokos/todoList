@@ -8,11 +8,10 @@ const userSchema = new schema(
         password: String,
         tasks: [
             {
-                order: Number,
-                task: String,
-                status: Boolean,
+              type: schema.Types.ObjectId,
+              ref: "tasks",
             },
-        ],
+          ],
     },
     {versionKey: false}
 );
