@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "tsc --watch",
-    "dev": "webpack --watch",
+    "compile": "tsc --watch",
+    "start": "webpack --watch",
     "test": "jest"
   },
   "keywords": [],
