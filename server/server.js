@@ -8,6 +8,7 @@ const jsonParser = bodyParser.json();
 
 require("./config/database").connect();
 const users = require("./models/users");
+const tasks = require("./models/tasks");
 
 app.set("view engine", "hbs");
 
@@ -21,9 +22,9 @@ app.use("/register", (req, res) => {
   res.render("registration.hbs");
 });
 
-app.use("/main", (req,res) => {
+app.use("/main", (req, res) => {
   res.render("main.hbs");
-})
+});
 
 app.post("/log", jsonParser, async (req, res) => {
   try {
@@ -72,6 +73,28 @@ app.post("/reg", jsonParser, async (req, res) => {
   }
 });
 
+app.post("/addCard", jsonParser, async (req, res) => {
+  try {
+    const { order, task } = req.body;
+
+    if ((!order && order != 0) || !task)
+      return res.status(400).send({ message: "No data" });
+
+    const newTask = new tasks({
+      order: order,
+      task: task,
+      status: false,
+    });
+
+    await newTask.save();
+
+    return res.status(200).send({ message: "Success" });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
 const server = app.listen(process.env.PORT || 4000, () => {
   console.log("Server is running");
 });
