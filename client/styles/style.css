@@ -148,6 +148,8 @@ body {
 }
 
 .task {
+  cursor: pointer;
+
   position: relative;
 
   display: flex;
@@ -162,6 +164,8 @@ body {
   font-size: 18px;
 
   margin-bottom: 20px;
+
+  transition: 0.6s cubic-bezier(0.61, 1, 0.88, 1);
 }
 .task::after {
   content: "";
@@ -177,6 +181,8 @@ body {
   background-color: #827ffe;
 
   border-radius: 3px 0 0 3px;
+
+  transition: 0.6s cubic-bezier(0.61, 1, 0.88, 1);
 }
 .task::before {
   content: "";
@@ -195,7 +201,28 @@ body {
 }
 
 .task.completed {
-  background-color: #808080;
+  text-decoration: line-through;
+}
+
+.task__inner{
+  position: fixed;
+  z-index: 1;
+  transform: translate(-160px, 150px);
+
+  width: 600px;
+  height: 400px;
+
+  background-color: #fff;
+  
+  box-shadow: 5px 5px 3px -1px rgb(34 60 80 / 24%);
+}
+.actions{
+  display: flex;
+  flex-direction: column;
+}
+.actions img{
+  width: 48px;
+  height: 48px;
 }
 
 .task input {
