@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema;
 
 const taskSchema = new schema(
-    {
-        order: Number,
-        task: String,
-        status: Boolean,
-    },
-    {versionKey:false}
-)
+  {
+    order: Number,
+    task: String,
+    status: Boolean,
+  },
+  { versionKey: false }
+);
+
+module.exports = mongoose.model("tasks", taskSchema);
