@@ -53,18 +53,12 @@ for (let i = 0; i < tasks.length; i++) {
       tasks[i].className = tasks[i].className.replace(/completed/g, "");
     }
 
-    // axios
-    //   .post("/", {
-        
-        
-    //   })
-    //   .then((res) => {
-    //     if (res.data.message === "Success") {
-       
-    //     }
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    axios
+      .post("/changeOrder", {
+        tasks,
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   });
 }
