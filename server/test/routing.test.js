@@ -58,3 +58,55 @@ describe("Registration requests", () => {
       });
   });
 });
+
+describe("Card's requests", () => {
+  it("Adding card, should return 400 ", () => {
+    chai
+      .request(server)
+      .post("/addCard")
+      .set("content-type", "application/json")
+      .send({
+        order: 12,
+        task: null,
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("No data");
+      });
+  });
+
+  it("Adding card, should return 200 ", () => {
+    chai
+      .request(server)
+      .post("/addCard")
+      .set("content-type", "application/json")
+      .send({
+        order: 11,
+        task: "test me",
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Success");
+      });
+  });
+
+  it("Change card, should return 200", () => {
+    chai
+      .request(server)
+      .post("/changeCard")
+      .set("content-type", "application/json")
+      .send({
+        order: 11,
+        task: "hello from mocha",
+      }).end((err,res) =>{
+      
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Success");
+
+        console.log(res)
+      });
+  });
+});
