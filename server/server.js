@@ -95,6 +95,62 @@ app.post("/addCard", jsonParser, async (req, res) => {
     return res.status(400).send({ message: "Error" });
   }
 });
+
+app.post("/removeCard", jsonParser, async (req, res) => {
+  try {
+    const { order } = req.body;
+
+    if (!order && order != 0)
+      return res.status(400).send({ message: "No data" });
+
+    const task = await tasks.findOne({ order });
+
+    if (!task) return res.status(400).send({ message: "Task does not exist" });
+
+    await task.remove();
+
+    return res.status(200).send({ message: "Success" });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
+
+app.post("/changeCard", jsonParser, async (req, res) => {
+  try {
+    const { order, task } = req.body;
+
+    if ((!order && order != 0) || !task)
+      return res.status(400).send({ message: "No data" });
+
+    const card = await tasks.findOne({ order: order });
+
+    card.task = task;
+
+    await card.save();
+
+    return res.status(200).send({ message: "Success" });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
+
+app.post("/changeOrder", jsonParser, async (req, res) => {
+  try {
+    const {tasks} = req.body;
+    
+    
+
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
+
 const server = app.listen(process.env.PORT || 4000, () => {
   console.log("Server is running");
 });
