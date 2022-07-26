@@ -27,7 +27,15 @@ button.addEventListener("click", (e) => {
           card.innerHTML = ` <input type=\"checkbox\" /> <div> ${input.value.slice(
             0,
             16
-          )} </div>`;
+          )} 
+          </div> <div class="task__inner">
+          <div class="actions">
+            <img src="./img/close.png" alt="close" id="close"/>
+            <img src="./img/delete.png" alt="delete" id="delete" />
+           </div>
+           <textarea cols="30" rows="10">${input.value}</textarea>
+            <button id="apply">apply</button>
+          </div>`;
 
           order.appendChild(card);
         }
