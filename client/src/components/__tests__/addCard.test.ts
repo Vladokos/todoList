@@ -8,14 +8,9 @@ describe("adding cards", () => {
   let response: object;
 
   beforeEach(() => {
-    response = {
-      data: { message: "Success"},
-    };
-  });
+    mockedAxios.post.mockClear();
 
-  it("Should add one card", () => {
-    mockedAxios.post.mockResolvedValueOnce(response);
-
+    // start body 
     document.body.innerHTML =
       '<div class="tasks"> </div>' +
       '<form class="task-create">' +
@@ -23,39 +18,134 @@ describe("adding cards", () => {
       '<button id="add">Add</button> ' +
       "</form>";
 
+    response = {
+      data: { message: "Success" },
+    };
+  });
+
+  it("Should add one card", async () => {
+    mockedAxios.post.mockResolvedValueOnce(response);
+
     const order = (
       [...document.getElementsByClassName("tasks")] as Element[]
     )[0];
     const input = document.getElementById("task-text") as HTMLInputElement;
     const button = document.getElementById("add") as HTMLButtonElement;
 
-    input.value = "321";
-
     const expecting: HTMLDivElement = document.createElement("div");
-    expecting.innerHTML =
-      '<div class="task " id="0">' +
-      `<input type="checkbox" /> <div> ${input.value.slice(0, 16)} </div> 
-          <div class="task__inner">
-          <div class="actions">
-            <img src="./img/close.png" alt="close" id="close"/>
-            <img src="./img/delete.png" alt="delete" id="delete" />
-           </div>
-           <textarea cols="30" rows="10">${input.value}</textarea>
-            <button id="apply">apply</button>
-          </div>` +
-      "</div>";
-    addCard(order);
 
-    button.click();
+    addCard();
+
+    await createExpecting(input, button, expecting, 1, ["321"]);
 
     expect(mockedAxios.post).toBeCalledTimes(1);
 
-    console.log(order.innerHTML);
+    expect(order).toBeDefined();
 
-    // expect(tasks).toBeDefined();
+    // compare cards with deleting white space
+    expect(order.innerHTML.replace(/ /g, "")).toBe(
+      expecting.innerHTML.replace(/ /g, "")
+    );
+  });
+  it("Should add two cards", async () => {
+    mockedAxios.post.mockResolvedValue(response);
 
-    // expect(tasks.innerHTML.replace(/ /g, "")).toBe(
-    //   expecting.innerHTML.replace(/ /g, "")
-    // );
+    const order = (
+      [...document.getElementsByClassName("tasks")] as Element[]
+    )[0];
+    const input = document.getElementById("task-text") as HTMLInputElement;
+    const button = document.getElementById("add") as HTMLButtonElement;
+
+    const expecting: HTMLDivElement = document.createElement("div");
+
+    addCard();
+
+    await createExpecting(input, button, expecting, 2, ["321", "123"]);
+
+    expect(mockedAxios.post).toBeCalledTimes(2);
+
+    expect(order).toBeDefined();
+
+    expect(order.innerHTML.replace(/ /g, "")).toBe(
+      expecting.innerHTML.replace(/ /g, "")
+    );
+  });
+  it("Should add three cards", async () => {
+    mockedAxios.post.mockResolvedValue(response);
+
+    const order = (
+      [...document.getElementsByClassName("tasks")] as Element[]
+    )[0];
+    const input = document.getElementById("task-text") as HTMLInputElement;
+    const button = document.getElementById("add") as HTMLButtonElement;
+
+    const expecting: HTMLDivElement = document.createElement("div");
+
+    addCard();
+
+    await createExpecting(input, button, expecting, 3, [
+      "321",
+      "123",
+      "asdasdasasdasdasdasd",
+    ]);
+
+    expect(mockedAxios.post).toBeCalledTimes(3);
+
+    expect(order).toBeDefined();
+
+    expect(order.innerHTML.replace(/ /g, "")).toBe(
+      expecting.innerHTML.replace(/ /g, "")
+    );
+  });
+  it("Should add zero cards", async () => {
+    mockedAxios.post.mockResolvedValue(response);
+
+    const order = (
+      [...document.getElementsByClassName("tasks")] as Element[]
+    )[0];
+    const input = document.getElementById("task-text") as HTMLInputElement;
+    const button = document.getElementById("add") as HTMLButtonElement;
+
+    const expecting: HTMLDivElement = document.createElement("div");
+
+    addCard();
+
+    await createExpecting(input, button, expecting, 0, []);
+
+    expect(mockedAxios.post).toBeCalledTimes(0);
+
+    expect(order).toBeDefined();
+
+    expect(order.innerHTML.replace(/ /g, "")).toBe(
+      expecting.innerHTML.replace(/ /g, "")
+    );
   });
 });
+// create card and imitate click on the button
+const createExpecting = async (
+  input: HTMLInputElement,
+  button: HTMLButtonElement,
+  parent: HTMLElement,
+  amount: number,
+  text: string[]
+) => {
+  if ((amount || amount === 0) && text) {
+    for (let i = 0; i < amount; i++) {
+      input.value = text[i];
+
+      parent.innerHTML +=
+        `<div class="task " id="${i}">` +
+        `<input type="checkbox" /> <div> ${text[i].slice(0, 16)} </div> 
+            <div class="task__inner">
+            <div class="actions">
+              <img src="./img/close.png" alt="close" id="close"/>
+              <img src="./img/delete.png" alt="delete" id="delete" />
+             </div>
+             <textarea cols="30" rows="10">${text[i]}</textarea>
+              <button id="apply">apply</button>
+            </div>` +
+        "</div>";
+      await Promise.resolve(button.click());
+    }
+  }
+};
