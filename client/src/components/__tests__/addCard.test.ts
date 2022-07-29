@@ -4,13 +4,20 @@ import { addCard } from "../addCard";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
+function test(order: HTMLDivElement, expect: HTMLDivElement) {
+  
+}
+
 describe("adding cards", () => {
   let response: object;
+  let order: HTMLDivElement;
+  let input: HTMLInputElement;
+  let button: HTMLButtonElement;
 
   beforeEach(() => {
     mockedAxios.post.mockClear();
 
-    // start body 
+    // start body
     document.body.innerHTML =
       '<div class="tasks"> </div>' +
       '<form class="task-create">' +
@@ -21,16 +28,16 @@ describe("adding cards", () => {
     response = {
       data: { message: "Success" },
     };
+
+    order = (
+      [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
+    )[0];
+    input = document.getElementById("task-text") as HTMLInputElement;
+    button = document.getElementById("add") as HTMLButtonElement;
   });
 
   it("Should add one card", async () => {
     mockedAxios.post.mockResolvedValueOnce(response);
-
-    const order = (
-      [...document.getElementsByClassName("tasks")] as Element[]
-    )[0];
-    const input = document.getElementById("task-text") as HTMLInputElement;
-    const button = document.getElementById("add") as HTMLButtonElement;
 
     const expecting: HTMLDivElement = document.createElement("div");
 
@@ -50,12 +57,6 @@ describe("adding cards", () => {
   it("Should add two cards", async () => {
     mockedAxios.post.mockResolvedValue(response);
 
-    const order = (
-      [...document.getElementsByClassName("tasks")] as Element[]
-    )[0];
-    const input = document.getElementById("task-text") as HTMLInputElement;
-    const button = document.getElementById("add") as HTMLButtonElement;
-
     const expecting: HTMLDivElement = document.createElement("div");
 
     addCard();
@@ -72,12 +73,6 @@ describe("adding cards", () => {
   });
   it("Should add three cards", async () => {
     mockedAxios.post.mockResolvedValue(response);
-
-    const order = (
-      [...document.getElementsByClassName("tasks")] as Element[]
-    )[0];
-    const input = document.getElementById("task-text") as HTMLInputElement;
-    const button = document.getElementById("add") as HTMLButtonElement;
 
     const expecting: HTMLDivElement = document.createElement("div");
 
@@ -99,12 +94,6 @@ describe("adding cards", () => {
   });
   it("Should add zero cards", async () => {
     mockedAxios.post.mockResolvedValue(response);
-
-    const order = (
-      [...document.getElementsByClassName("tasks")] as Element[]
-    )[0];
-    const input = document.getElementById("task-text") as HTMLInputElement;
-    const button = document.getElementById("add") as HTMLButtonElement;
 
     const expecting: HTMLDivElement = document.createElement("div");
 
