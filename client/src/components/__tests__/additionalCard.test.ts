@@ -5,7 +5,13 @@ jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
 describe("test addition functions", () => {
+  let response: object;
+
   beforeEach(() => {
+    response = {
+      data: { message: "Success" },
+    };
+
     document.body.innerHTML = '<div class="tasks"> </div>';
   });
   it("Should add to one card class 'active' ", () => {
@@ -42,6 +48,55 @@ describe("test addition functions", () => {
 
     expect(card).toBeDefined();
     expect(card.children[2].className).toEqual("task__inner");
+  });
+  it("Should delete the card", async () => {
+    mockedAxios.post.mockResolvedValueOnce(response);
+
+    addCard(1);
+
+    const tasks = (
+      [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
+    )[0];
+    const card = (
+      [...document.getElementsByClassName("task")] as HTMLDivElement[]
+    )[0];
+    const deleteButton = card.children[2].children[0]
+      .children[1] as HTMLImageElement;
+
+    additionalCard();
+
+    expect(tasks.children[0]).toBeDefined();
+
+    await Promise.resolve(deleteButton.click());
+
+    expect(mockedAxios.post).toBeCalledTimes(1);
+
+    expect(tasks.children[0]).not.toBeDefined();
+  });
+  it("Should change the card", async () => {
+    mockedAxios.post.mockResolvedValueOnce(response);
+
+    addCard(1);
+
+    const card = (
+      [...document.getElementsByClassName("task")] as HTMLDivElement[]
+    )[0];
+    const titleCard = card.children[1] as HTMLDivElement;
+    const textArea = card.children[2].children[1] as HTMLTextAreaElement;
+    const applyButton = card.children[2].children[2] as HTMLButtonElement;
+
+    textArea.value = "New values and some more text";
+
+    const expectTitle = textArea.value.slice(0, 16);
+
+    additionalCard();
+
+    await Promise.resolve(applyButton.click());
+
+    expect(mockedAxios.post).toBeCalledTimes(1);
+
+    expect(titleCard.innerText).toEqual(expectTitle);
+    expect(textArea.value).toEqual("New values and some more text");
   });
 });
 
