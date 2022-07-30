@@ -100,13 +100,24 @@ describe("Card's requests", () => {
       .send({
         order: 11,
         task: "hello from mocha",
-      }).end((err,res) =>{
-      
+      })
+      .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a("object");
         expect(res.body.message).to.be.equal("Success");
+      });
+  });
 
-        console.log(res)
+  it("Delete card, should return 200", () => {
+    chai
+      .request(server)
+      .post("/removeCard")
+      .set("content-type", "application/json")
+      .send({ order: 11 })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Success");
       });
   });
 });
