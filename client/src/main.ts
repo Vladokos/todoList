@@ -1,2 +1,5 @@
 import "./components/actionCard";
-import "./components/addCard";
+import { addCard } from "./components/addCard"; 
+import "./components/additionalCard";
+
+addCard();
