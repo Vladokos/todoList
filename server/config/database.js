@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 exports.connect = () => {
-    mongoose.connect("mongodb://localhost:27017/todoList", {
+    mongoose.connect(process.env.LINK_DATABASE, {
         useUnifiedTopology: true,
         useNewUrlParser: true,
     }).then(() => {
