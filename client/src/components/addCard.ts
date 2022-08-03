@@ -1,7 +1,9 @@
 import axios from "axios";
 
 export const addCard = () => {
-  const order = ([...document.getElementsByClassName("tasks")] as HTMLDivElement[])[0];
+  const tasks = (
+    [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
+  )[0];
 
   const form = [
     ...document.getElementsByClassName("task-create"),
@@ -14,17 +16,22 @@ export const addCard = () => {
     e.preventDefault();
 
     if (input.value.trim().length != 0) {
+      const userId = sessionStorage.getItem("userId");
+
       axios
         .post("/addCard", {
-          order: order.children.length,
           task: input.value,
+          userId,
         })
         .then((res) => {
           if (res.data.message === "Success") {
+            const idCard: string = res.data.id;
+
             const text: string = input.value;
-            const card: HTMLDivElement = document.createElement("div");
-            card.className = "task ";
-            card.id = order.children.length.toString();
+
+            const card: HTMLElement = document.createElement("div");
+            card.className = `${idCard} task `;
+            card.id = tasks.children.length.toString(); //order
 
             card.innerHTML = `<input type="checkbox" /> <div> ${text.slice(
               0,
@@ -38,7 +45,12 @@ export const addCard = () => {
            <textarea cols="30" rows="10">${text}</textarea>
             <button id="apply">apply</button>
           </div>`;
-            order.appendChild(card);
+
+            tasks.appendChild(card);
+
+            const clone = tasks.cloneNode(true);
+
+            tasks.parentNode?.replaceChild(clone, tasks);
           }
         })
         .catch((err) => {
