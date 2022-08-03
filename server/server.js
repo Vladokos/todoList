@@ -37,7 +37,9 @@ app.post("/log", jsonParser, async (req, res) => {
 
     if (!user) return res.status(404).send({ message: "User does not exist" });
 
-    return res.status(200).send({ message: "Success" });
+    const id = user._id;
+
+    return res.status(200).send({ message: "Success", id });
   } catch (e) {
     console.log(e);
 
@@ -65,7 +67,9 @@ app.post("/reg", jsonParser, async (req, res) => {
 
     await user.save();
 
-    return res.status(200).send({ message: "Success" });
+    const id = user._id;
+
+    return res.status(200).send({ message: "Success", id });
   } catch (e) {
     console.log(e);
 
@@ -73,22 +77,50 @@ app.post("/reg", jsonParser, async (req, res) => {
   }
 });
 
+app.get("/getCards/:userId", jsonParser, async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    if (!userId) return res.status(400).send({ message: "No data" });
+
+    const cards = await tasks.find({ userId });
+
+    //...
+
+    return res.status(200).send({ message: "Success", cards });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
+// should send task._id back
 app.post("/addCard", jsonParser, async (req, res) => {
   try {
-    const { order, task } = req.body;
+    const { task, userId } = req.body;
 
-    if ((!order && order != 0) || !task)
-      return res.status(400).send({ message: "No data" });
+    if (!task || !userId) return res.status(400).send({ message: "No data" });
+
+    const user = await users.findById(userId);
+
+    if (!user) return res.status(400).send({ message: "User does not exist" });
 
     const newTask = new tasks({
-      order: order,
+      order: user.tasks.length,
       task: task,
       status: false,
+      userId: userId,
     });
 
     await newTask.save();
 
-    return res.status(200).send({ message: "Success" });
+    user.tasks.push(newTask);
+
+    await user.save();
+
+    const id = newTask._id;
+
+    return res.status(200).send({ message: "Success", id });
   } catch (e) {
     console.log(e);
 
@@ -98,12 +130,11 @@ app.post("/addCard", jsonParser, async (req, res) => {
 
 app.post("/removeCard", jsonParser, async (req, res) => {
   try {
-    const { order } = req.body;
+    const { id } = req.body;
 
-    if (!order && order != 0)
-      return res.status(400).send({ message: "No data" });
+    if (!id) return res.status(400).send({ message: "No data" });
 
-    const task = await tasks.findOne({ order });
+    const task = await tasks.findById(id);
 
     if (!task) return res.status(400).send({ message: "Task does not exist" });
 
@@ -119,12 +150,11 @@ app.post("/removeCard", jsonParser, async (req, res) => {
 
 app.post("/changeCard", jsonParser, async (req, res) => {
   try {
-    const { order, task } = req.body;
+    const { id, task } = req.body;
 
-    if ((!order && order != 0) || !task)
-      return res.status(400).send({ message: "No data" });
+    if (!id || !task) return res.status(400).send({ message: "No data" });
 
-    const card = await tasks.findOne({ order: order });
+    const card = await tasks.findById(id);
 
     card.task = task;
 
@@ -140,10 +170,7 @@ app.post("/changeCard", jsonParser, async (req, res) => {
 
 app.post("/changeOrder", jsonParser, async (req, res) => {
   try {
-    const {tasks} = req.body;
-    
-    
-
+    const { tasks } = req.body;
   } catch (e) {
     console.log(e);
 
