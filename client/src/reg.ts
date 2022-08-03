@@ -15,7 +15,7 @@ button.addEventListener("click", (e) => {
     })
     .then((res) => {
       if (res.data.message === "Success") {
-        sessionStorage.setItem("Username", login.value);
+        sessionStorage.setItem("userId", res.data.id);
 
         window.location.replace("/main");
       }
