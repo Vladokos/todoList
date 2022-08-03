@@ -7,6 +7,7 @@ const taskSchema = new schema(
     order: Number,
     task: String,
     status: Boolean,
+    userId: { type: schema.Types.ObjectId, ref: "users" },
   },
   { versionKey: false }
 );
