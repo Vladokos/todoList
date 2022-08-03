@@ -8,9 +8,10 @@ export const actionCard = () => {
   const tasks = [...document.getElementsByClassName("task")].map((e) => {
     return e;
   });
-
+  
   for (let i = 0; i < tasks.length; i++) {
-    tasks[i].childNodes[1].addEventListener("change", (e) => {
+  
+    tasks[i].children[0].addEventListener("change", (e) => {
       const status: boolean = (e.target as HTMLInputElement).checked;
       const children = tasksHolder.children;
       const id: number | null = Number(
