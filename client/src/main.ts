@@ -10,16 +10,18 @@ const tasks = (
   [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
 )[0];
 
-addCard();
-
-tasks.addEventListener("DOMNodeInserted", () => {
-
-  // clearListener();
-  console.log('a');
-
-
-
+const callback = () => {
+  clearListener();
   actionCard();
   additionalCard();
+};
 
-});
+const config = {
+  childList: true,
+};
+
+const observe: MutationObserver = new MutationObserver(callback);
+
+observe.observe(tasks, config);
+
+addCard();
