@@ -1,9 +1,11 @@
 import axios from "axios";
 
-export const addCard = () => {
+export const addCard = (newListeners: Function) => {
   const tasks = (
     [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
   )[0];
+
+  const parentElement = tasks.parentNode;
 
   const form = [
     ...document.getElementsByClassName("task-create"),
@@ -50,7 +52,9 @@ export const addCard = () => {
 
             const clone = tasks.cloneNode(true);
 
-            tasks.parentNode?.replaceChild(clone, tasks);
+            parentElement?.replaceChild(clone, parentElement.childNodes[1]);
+
+            newListeners();
           }
         })
         .catch((err) => {
