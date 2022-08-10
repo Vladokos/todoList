@@ -46,10 +46,13 @@ export const addCard = (newListeners: Function) => {
            </div>
            <textarea cols="30" rows="10">${text}</textarea>
             <button id="apply">apply</button>
-          </div>`;
+          </div>
+          <div></div>`;
 
             tasks.appendChild(card);
 
+            // it need for reset listeners and after
+            // via newListeners() add again but also added the new card
             const clone = tasks.cloneNode(true);
 
             parentElement?.replaceChild(clone, parentElement.childNodes[1]);
