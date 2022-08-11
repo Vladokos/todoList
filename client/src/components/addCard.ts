@@ -18,7 +18,9 @@ export const addCard = (newListeners: Function) => {
     e.preventDefault();
 
     if (input.value.trim().length != 0) {
-      const userId = sessionStorage.getItem("userId");
+      const userId: string | null = sessionStorage.getItem("userId");
+
+      if (!userId) return window.location.replace("/login");
 
       axios
         .post("/addCard", {
