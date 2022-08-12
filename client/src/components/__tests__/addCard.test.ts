@@ -4,10 +4,6 @@ import { addCard } from "../addCard";
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-function test(order: HTMLDivElement, expect: HTMLDivElement) {
-  
-}
-
 describe("adding cards", () => {
   let response: object;
   let order: HTMLDivElement;
@@ -17,16 +13,21 @@ describe("adding cards", () => {
   beforeEach(() => {
     mockedAxios.post.mockClear();
 
+    sessionStorage.setItem('userId', '1');
+
+
     // start body
     document.body.innerHTML =
+      "<section>" +
       '<div class="tasks"> </div>' +
       '<form class="task-create">' +
       '<input id="task-text" type="text" />' +
       '<button id="add">Add</button> ' +
-      "</form>";
+      "</form>" +
+      "</section>";
 
     response = {
-      data: { message: "Success" },
+      data: { message: "Success", id: 10 },
     };
 
     order = (
@@ -41,9 +42,9 @@ describe("adding cards", () => {
 
     const expecting: HTMLDivElement = document.createElement("div");
 
-    addCard();
+    addCard(() => {});
 
-    await createExpecting(input, button, expecting, 1, ["321"]);
+    await createExpecting(10, input, button, expecting, 1, ["321"]);
 
     expect(mockedAxios.post).toBeCalledTimes(1);
 
@@ -59,9 +60,9 @@ describe("adding cards", () => {
 
     const expecting: HTMLDivElement = document.createElement("div");
 
-    addCard();
+    addCard(() => {});
 
-    await createExpecting(input, button, expecting, 2, ["321", "123"]);
+    await createExpecting(10, input, button, expecting, 2, ["321", "123"]);
 
     expect(mockedAxios.post).toBeCalledTimes(2);
 
@@ -76,9 +77,9 @@ describe("adding cards", () => {
 
     const expecting: HTMLDivElement = document.createElement("div");
 
-    addCard();
+    addCard(() => {});
 
-    await createExpecting(input, button, expecting, 3, [
+    await createExpecting(10, input, button, expecting, 3, [
       "321",
       "123",
       "asdasdasasdasdasdasd",
@@ -97,9 +98,9 @@ describe("adding cards", () => {
 
     const expecting: HTMLDivElement = document.createElement("div");
 
-    addCard();
+    addCard(() => {});
 
-    await createExpecting(input, button, expecting, 0, []);
+    await createExpecting(10, input, button, expecting, 0, []);
 
     expect(mockedAxios.post).toBeCalledTimes(0);
 
@@ -112,6 +113,7 @@ describe("adding cards", () => {
 });
 // create card and imitate click on the button
 const createExpecting = async (
+  id: number,
   input: HTMLInputElement,
   button: HTMLButtonElement,
   parent: HTMLElement,
@@ -122,18 +124,19 @@ const createExpecting = async (
     for (let i = 0; i < amount; i++) {
       input.value = text[i];
 
-      parent.innerHTML +=
-        `<div class="task " id="${i}">` +
-        `<input type="checkbox" /> <div> ${text[i].slice(0, 16)} </div> 
-            <div class="task__inner">
-            <div class="actions">
+      const slicedText: string = text[i].slice(0, 16);
+
+      parent.innerHTML += `<div class="${id} task " id="${i}"> <input type="checkbox" /> <div> ${slicedText} </div> 
+          <div class="task__inner">
+             <div class="actions">
               <img src="./img/close.png" alt="close" id="close"/>
               <img src="./img/delete.png" alt="delete" id="delete" />
              </div>
              <textarea cols="30" rows="10">${text[i]}</textarea>
-              <button id="apply">apply</button>
-            </div>` +
-        "</div>";
+             <button id="apply">apply</button>
+          </div>
+        <div></div></div>`;
+        
       await Promise.resolve(button.click());
     }
   }
