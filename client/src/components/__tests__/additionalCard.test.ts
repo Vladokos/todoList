@@ -8,14 +8,21 @@ describe("test addition functions", () => {
   let response: object;
 
   beforeEach(() => {
+    mockedAxios.post.mockClear();
+
+    sessionStorage.setItem('userId', '1');
+
+
     response = {
       data: { message: "Success" },
     };
 
     document.body.innerHTML = '<div class="tasks"> </div>';
+
+
   });
   it("Should add to one card class 'active' ", () => {
-    addCard(1);
+    addCard(1, 10);
 
     additionalCard();
 
@@ -27,9 +34,10 @@ describe("test addition functions", () => {
 
     expect(card).toBeDefined();
     expect(card.children[2].className).toEqual("task__inner active");
+    expect(card.children[3].className).toEqual("background");
   });
   it("Should add and remove class 'active'", () => {
-    addCard(1);
+    addCard(1, 10);
 
     additionalCard();
 
@@ -43,16 +51,18 @@ describe("test addition functions", () => {
 
     expect(card).toBeDefined();
     expect(card.children[2].className).toEqual("task__inner active");
+    expect(card.children[3].className).toEqual("background");
 
     closeButton.click();
 
     expect(card).toBeDefined();
     expect(card.children[2].className).toEqual("task__inner");
+    expect(card.children[3].className).toEqual(" ");
   });
   it("Should delete the card", async () => {
     mockedAxios.post.mockResolvedValueOnce(response);
 
-    addCard(1);
+    addCard(1, 10);
 
     const tasks = (
       [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
@@ -76,7 +86,7 @@ describe("test addition functions", () => {
   it("Should change the card", async () => {
     mockedAxios.post.mockResolvedValueOnce(response);
 
-    addCard(1);
+    addCard(1, 10);
 
     const card = (
       [...document.getElementsByClassName("task")] as HTMLDivElement[]
@@ -100,13 +110,13 @@ describe("test addition functions", () => {
   });
 });
 
-const addCard = async (amount: number) => {
+const addCard = async (amount: number, id: number) => {
   if (amount) {
     const tasksHolder = (
       [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
     )[0];
     for (let i = 0; i < amount; i++) {
-      tasksHolder.innerHTML += `<div class="task " id="${i}">
+      tasksHolder.innerHTML += `<div class="${id} task " id="${i}">
         <input type="checkbox" />
         <div>
             change text
@@ -119,6 +129,7 @@ const addCard = async (amount: number) => {
           <textarea cols="30" rows="10"></textarea>
           <button id="apply">apply</button>
         </div>
+        <div></div>
       </div>`;
     }
   }
