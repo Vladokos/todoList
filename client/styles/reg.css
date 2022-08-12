@@ -134,3 +134,30 @@ body {
 #reg:focus {
   transform: translate(0, 3px);
 }
+
+@media (max-width: 488px) {
+  .regForm h1 {
+    width: 100% !important;
+  }
+
+  .fields input {
+    width: 100%;
+  }
+
+  .regForm a {
+    width: 100%;
+  }
+
+  #reg {
+    width: 100%;
+  }
+
+  .fields input:focus + .focus-input {
+    transform: translate(-315px, 0px);
+    width: 314px;
+  }
+
+  .focus-input {
+    transform: translateX(-361px) translateY(-11px);
+  }
+}
