@@ -1,4 +1,10 @@
 import axios from "axios";
+import { checkStorage } from "./checkStorage";
+
+import "../styles/reset.css";
+import "../styles/reg.css";
+
+checkStorage();
 
 const login = document.getElementById("username") as HTMLInputElement;
 const password = document.getElementById("password") as HTMLInputElement;
