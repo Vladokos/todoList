@@ -4,8 +4,6 @@ export const requestCards = (newListeners: Function) => {
   document.addEventListener("DOMContentLoaded", () => {
     const userId: string | null = sessionStorage.getItem("userId");
 
-    if (!userId) return window.location.replace("/login");
-
     const tasks = (
       [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
     )[0];
