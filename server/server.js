@@ -4,6 +4,8 @@ require("dotenv").config();
 
 const app = express();
 
+const bcrypt = require("bcryptjs");
+
 const jsonParser = bodyParser.json();
 
 require("./config/database").connect();
@@ -35,7 +37,10 @@ app.post("/log", jsonParser, async (req, res) => {
 
     const user = await users.findOne({ login: login });
 
-    if (!user) return res.status(404).send({ message: "User does not exist" });
+    const comparePassword = await bcrypt.compare(password, user.password);
+
+    if (!user || !comparePassword)
+      return res.status(404).send({ message: "User does not exist" });
 
     const id = user._id;
 
@@ -60,9 +65,11 @@ app.post("/reg", jsonParser, async (req, res) => {
       return res.status(400).send({ message: "user already exist" });
     }
 
+    const encryptPassword = await bcrypt.hash(password, 10);
+
     const user = new users({
       login: login,
-      password: password,
+      password: encryptPassword,
     });
 
     await user.save();
@@ -70,6 +77,24 @@ app.post("/reg", jsonParser, async (req, res) => {
     const id = user._id;
 
     return res.status(200).send({ message: "Success", id });
+  } catch (e) {
+    console.log(e);
+
+    return res.status(400).send({ message: "Error" });
+  }
+});
+
+app.post("/checkUser", jsonParser, async (req, res) => {
+  try {
+    const { userId } = req.body;
+
+    if (!userId) return res.status(400).send({ message: "No data" });
+
+    const user = await users.findById(userId);
+
+    if (!user) return res.status(400).send({ message: "User doest exist" });
+
+    return res.status(200).send({ message: "Success" });
   } catch (e) {
     console.log(e);
 
@@ -85,7 +110,8 @@ app.get("/getCards/:userId", jsonParser, async (req, res) => {
 
     const cards = await tasks.find({ userId });
 
-    //...
+    // because it may be a new user and he/she can have no cards
+    if (!cards) return res.status(200).send({ message: "No cards" });
 
     return res.status(200).send({ message: "Success", cards });
   } catch (e) {
@@ -94,7 +120,7 @@ app.get("/getCards/:userId", jsonParser, async (req, res) => {
     return res.status(400).send({ message: "Error" });
   }
 });
-// should send task._id back
+
 app.post("/addCard", jsonParser, async (req, res) => {
   try {
     const { task, userId } = req.body;
@@ -130,15 +156,20 @@ app.post("/addCard", jsonParser, async (req, res) => {
 
 app.post("/removeCard", jsonParser, async (req, res) => {
   try {
-    const { id } = req.body;
+    const { userId, cardId } = req.body;
 
-    if (!id) return res.status(400).send({ message: "No data" });
+    if (!userId || !cardId) return res.status(400).send({ message: "No data" });
 
-    const task = await tasks.findById(id);
+    const user = await users.findById(userId);
+    const task = await tasks.findById(cardId);
 
-    if (!task) return res.status(400).send({ message: "Task does not exist" });
+    if (!user || !task)
+      return res.status(400).send({ message: "Task does not exist" });
 
     await task.remove();
+
+    await user.tasks.remove({ _id: cardId });
+    await user.save();
 
     return res.status(200).send({ message: "Success" });
   } catch (e) {
@@ -150,11 +181,11 @@ app.post("/removeCard", jsonParser, async (req, res) => {
 
 app.post("/changeCard", jsonParser, async (req, res) => {
   try {
-    const { id, task } = req.body;
+    const { cardId, task } = req.body;
 
-    if (!id || !task) return res.status(400).send({ message: "No data" });
+    if (!cardId || !task) return res.status(400).send({ message: "No data" });
 
-    const card = await tasks.findById(id);
+    const card = await tasks.findById(cardId);
 
     card.task = task;
 
@@ -170,7 +201,27 @@ app.post("/changeCard", jsonParser, async (req, res) => {
 
 app.post("/changeOrder", jsonParser, async (req, res) => {
   try {
-    const { tasks } = req.body;
+    const { userId, sortedTasks } = req.body;
+
+    if (!userId || !sortedTasks)
+      return res.status(400).send({ message: "No data" });
+
+    const oldTasks = await tasks.find({ userId });
+
+    if (!oldTasks)
+      return res.status(400).send({ message: "User does not exist" });
+
+    for (let i = 0; i < oldTasks.length; i++) {
+      let a = oldTasks.find(
+        (task) => task._id.toString() === sortedTasks[i]._id
+      );
+
+      a.order = sortedTasks[i].order;
+
+      await a.save();
+    }
+
+    return res.status(200).send({ message: "Success" });
   } catch (e) {
     console.log(e);
 
