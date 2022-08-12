@@ -2,26 +2,21 @@ import { requestCards } from "./components/requestCards";
 import { actionCard } from "./components/actionCard";
 import { addCard } from "./components/addCard";
 import { additionalCard } from "./components/additionalCard";
-import { clearListener } from "./components/clearListener";
+import { checkStorage } from "./checkStorage";
 
-requestCards();
+import "../styles/reset.css";
+import "../styles/main.css";
 
-const tasks = (
-  [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
-)[0];
+import "../img/close.png";
+import "../img/delete.png";
 
-const callback = () => {
-  clearListener();
+checkStorage();
+
+const newListeners = (): void => {
   actionCard();
   additionalCard();
 };
 
-const config = {
-  childList: true,
-};
+requestCards(newListeners);
 
-const observe: MutationObserver = new MutationObserver(callback);
-
-observe.observe(tasks, config);
-
-addCard();
+addCard(newListeners);
