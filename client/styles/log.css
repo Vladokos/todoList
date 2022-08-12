@@ -131,6 +131,33 @@ body {
   transition: 0.6s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
-#login:focus{
-    transform: translate(0, 3px);
+#login:focus {
+  transform: translate(0, 3px);
+}
+
+@media (max-width: 488px) {
+  .loginInForm h1 {
+    width: 100% !important;
+  }
+
+  .fields input {
+    width: 100%;
+  }
+
+  .loginInForm a {
+    width: 100%;
+  }
+
+  #login {
+    width: 100%;
+  }
+
+  .fields input:focus + .focus-input {
+    transform: translate(-315px, 0px);
+    width: 314px;
+  }
+
+  .focus-input {
+    transform: translateX(-361px) translateY(-11px);
+  }
 }
