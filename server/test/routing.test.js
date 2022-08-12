@@ -1,6 +1,5 @@
 const chai = require("chai");
 const expect = chai.expect;
-const should = chai.should;
 const chaiHttp = require("chai-http");
 const { it } = require("mocha");
 const server = require("../server");
@@ -14,7 +13,7 @@ describe("Login requests", () => {
       .post("/log")
       .set("content-type", "application/json")
       .send({
-        login: "asd",
+        login: "asd3",
         password: "123",
       })
       .end((err, res) => {
@@ -39,6 +38,22 @@ describe("Login requests", () => {
         expect(res.body.message).to.be.equal("No data");
       });
   });
+
+  it("should return 200", () => {
+    chai
+      .request(server)
+      .post("/log")
+      .set("content-type", "application/json")
+      .send({
+        login: process.env.USER_LOGIN,
+        password: process.env.USER_PASSWORD,
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Success");
+      });
+  });
 });
 
 describe("Registration requests", () => {
@@ -48,11 +63,11 @@ describe("Registration requests", () => {
       .post("/reg")
       .set("content-type", "application/json")
       .send({
-        login: "asd",
-        password: "123",
+        login: process.env.USER_LOGIN,
+        password: process.env.USER_PASSWORD,
       })
       .end((err, res) => {
-        expect(res).to.have.status(200);
+        expect(res).to.have.status(200 | 400);
         expect(res.body).to.be.a("object");
         expect(res.body.message).to.be.equal("Success");
       });
@@ -82,8 +97,8 @@ describe("Card's requests", () => {
       .post("/addCard")
       .set("content-type", "application/json")
       .send({
-        order: 11,
         task: "test me",
+        userId: process.env.USER_ID,
       })
       .end((err, res) => {
         expect(res).to.have.status(200);
@@ -98,7 +113,7 @@ describe("Card's requests", () => {
       .post("/changeCard")
       .set("content-type", "application/json")
       .send({
-        order: 11,
+        cardId: process.env.CARD_ID,
         task: "hello from mocha",
       })
       .end((err, res) => {
@@ -113,11 +128,45 @@ describe("Card's requests", () => {
       .request(server)
       .post("/removeCard")
       .set("content-type", "application/json")
-      .send({ order: 11 })
+      .send({
+        userId: process.env.USER_ID,
+        cardId: process.env.CARD_ID,
+      })
       .end((err, res) => {
         expect(res).to.have.status(200);
         expect(res.body).to.be.a("object");
         expect(res.body.message).to.be.equal("Success");
+      });
+  });
+});
+
+describe("Test /checkUser", () => {
+  it("Should return 200", () => {
+    chai
+      .request(server)
+      .post("/checkUser")
+      .set("content-type", "application/json")
+      .send({
+        userId: process.env.USER_ID,
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(200);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Success");
+      });
+  });
+  it("Should return 400", () => {
+    chai
+      .request(server)
+      .post("/checkUser")
+      .set("content-type", "application/json")
+      .send({
+        userId: 'nonjiojioj',
+      })
+      .end((err, res) => {
+        expect(res).to.have.status(400);
+        expect(res.body).to.be.a("object");
+        expect(res.body.message).to.be.equal("Error");
       });
   });
 });
