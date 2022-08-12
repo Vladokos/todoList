@@ -154,6 +154,7 @@ body {
 
   .fields input:focus + .focus-input {
     transform: translate(-315px, 0px);
+    
     width: 314px;
   }
 
