@@ -3,8 +3,6 @@ import axios from "axios";
 export const actionCard = () => {
   const userId: string | null = sessionStorage.getItem("userId");
 
-  if (!userId) return window.location.replace("/login");
-
   const tasksHolder = (
     [...document.getElementsByClassName("tasks")] as HTMLDivElement[]
   )[0];
