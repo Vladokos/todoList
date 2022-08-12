@@ -12,8 +12,14 @@ export const additionalCard = () => {
     task[i].addEventListener("click", (e) => {
       if (e.target === task[i].children[0]) return;
 
+      //support for firefox
+      task[i].parentElement!.style.overflowY = "hidden";
+
+      //background
       if (e.target === task[i].children[3]) {
         task[i].children[3].className = " ";
+
+        task[i].parentElement!.style.overflowY = "auto";
 
         return (task[i].children[2].className = "task__inner");
       }
@@ -28,6 +34,8 @@ export const additionalCard = () => {
       (e) => {
         task[i].children[2].className = "task__inner";
         task[i].children[3].className = " ";
+
+        task[i].parentElement!.style.overflowY = "auto";
 
         e.stopPropagation();
       }
@@ -46,6 +54,8 @@ export const additionalCard = () => {
           })
           .then((res) => {
             if (res.data.message === "Success") {
+              task[i].parentElement!.style.overflowY = "auto";
+
               task[i].parentElement?.removeChild(task[i]);
             }
           })
@@ -78,6 +88,8 @@ export const additionalCard = () => {
 
             task[i].children[3].className = "background";
             task[i].children[2].className = "task__inner";
+
+            task[i].parentElement!.style.overflowY = "auto";
           }
         })
         .catch((err) => {
