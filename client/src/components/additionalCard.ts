@@ -1,14 +1,27 @@
 import axios from "axios";
 
 export const additionalCard = () => {
+  const userId: string | null = sessionStorage.getItem("userId");
+
+  if (!userId) return window.location.replace("/login");
+
   const task = [...document.getElementsByClassName("task")] as HTMLDivElement[];
 
   for (let i = 0; i < task.length; i++) {
+    const cardId: string = task[i].className.split(" ")[0];
+
     // card (open additional menu)
     task[i].addEventListener("click", (e) => {
       if (e.target === task[i].children[0]) return;
 
+      if (e.target === task[i].children[3]) {
+        task[i].children[3].className = " ";
+
+        return (task[i].children[2].className = "task__inner");
+      }
+
       task[i].children[2].className += " active";
+      task[i].children[3].className = "background";
     });
 
     // the close button
@@ -16,6 +29,7 @@ export const additionalCard = () => {
       "click",
       (e) => {
         task[i].children[2].className = "task__inner";
+        task[i].children[3].className = " ";
 
         e.stopPropagation();
       }
@@ -24,10 +38,13 @@ export const additionalCard = () => {
     // the delete button
     task[i].children[2].children[0].children[1].addEventListener(
       "click",
-      () => {
+      (e) => {
+        e.preventDefault();
+
         axios
           .post("/removeCard", {
-            order: task[i].id,
+            userId,
+            cardId,
           })
           .then((res) => {
             if (res.data.message === "Success") {
@@ -48,7 +65,7 @@ export const additionalCard = () => {
 
       axios
         .post("/changeCard", {
-          order: task[i].id,
+          cardId,
           task: textArea.value,
         })
         .then((res) => {
@@ -60,6 +77,9 @@ export const additionalCard = () => {
             titleCard.innerText = `${text.slice(0, 16)}`;
 
             textArea.value = text;
+
+            task[i].children[3].className = "background";
+            task[i].children[2].className = "task__inner";
           }
         })
         .catch((err) => {
